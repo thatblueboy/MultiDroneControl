@@ -5,7 +5,7 @@ from gym_pybullet_drones.utils.enums import DroneModel, Physics
 from gym_pybullet_drones.envs.single_agent_rl.BaseSingleAgentAviary import ActionType, ObservationType
 from gym_pybullet_drones.envs.multi_agent_rl.BaseMultiagentAviary import BaseMultiagentAviary
 
-class TwoDroneAviary(BaseMultiagentAviary):
+class TwoDronesAviary(BaseMultiagentAviary):
     """Two drones cross without hitting each other
     first drone has to go from (-1, -1, 0.5) to (1, 1, 0.5) 
     Second drone has to go from (1, -1, 0.5) to (-1, 1, 0.5)"""

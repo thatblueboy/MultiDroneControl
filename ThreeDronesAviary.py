@@ -5,7 +5,7 @@ from gym_pybullet_drones.utils.enums import DroneModel, Physics
 from gym_pybullet_drones.envs.single_agent_rl.BaseSingleAgentAviary import ActionType, ObservationType
 from gym_pybullet_drones.envs.multi_agent_rl.BaseMultiagentAviary import BaseMultiagentAviary
 
-class TwoDroneAviary(BaseMultiagentAviary):
+class ThreeDronesAviary(BaseMultiagentAviary):
     """ 
     to do
     """
@@ -14,9 +14,9 @@ class TwoDroneAviary(BaseMultiagentAviary):
 
     def __init__(self,
                  drone_model: DroneModel=DroneModel.CF2X,
-                 num_drones: int=2,
+                 num_drones: int=3,
                  neighbourhood_radius: float=np.inf,
-                 initial_xyzs=np.array([[-1, -1, 0.5], [1, -1, 0.5]]),
+                 initial_xyzs=np.array([[-1, -1, 0.5], [1, -1, 0.5], [0, 0, 0.5]]),
                  initial_rpys=np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]),
                  physics: Physics=Physics.PYB,
                  freq: int=240,
@@ -88,9 +88,18 @@ class TwoDroneAviary(BaseMultiagentAviary):
         states = np.array([self._getDroneStateVector(i) for i in range(self.NUM_DRONES)])
         pos1 = states[0, 0:3]
         pos2 = states[1, 0:3]
+        pos3 = states[2, 0:3]
         
-        if np.linalg.norm(pos1-pos2)<0.2: # if collision/too close
-            rewards[0] = rewards[1] = -100
+        if (np.linalg.norm(pos1-pos2)<0.2 or np.linalg.norm(pos3-pos2)<0.2 or np.linalg.norm(pos1-pos3)<0.2):
+
+            if np.linalg.norm(pos1-pos2)<0.2: # if collision/too close
+                rewards[0] = rewards[1] = -100
+
+            if np.linalg.norm(pos3-pos2)<0.2: # if collision/too close
+                rewards[2] = rewards[1] = -100
+
+            if np.linalg.norm(pos1-pos3)<0.2: # if collision/too close
+                rewards[0] = rewards[2] = -100
             return rewards
         
         if np.linalg.norm(pos1-np.array([1, 1, 0.5]))<0.2: # award drone 1 if it reaches goal 1
@@ -98,6 +107,10 @@ class TwoDroneAviary(BaseMultiagentAviary):
 
         if np.linalg.norm(pos2-np.array([-1, 1, 0.5]))<0.2: # award drone 2 if it reaches goal 2
             rewards[1] = 100
+
+        if np.linalg.norm(pos2-np.array([-1, 1, 0.5]))<0.2: # award drone 2 if it reaches goal 2
+            rewards[1] = 100
+        
         return rewards
     
     ################################################################################

@@ -14,7 +14,7 @@ from ray.tune import register_env
 from stable_baselines3 import A2C
 from stable_baselines3.a2c import MlpPolicy
 from stable_baselines3.common.env_checker import check_env
-from TwoDroneAviary import TwoDroneAviary
+from TwoDronesAviary import TwoDronesAviary
 
 
 EPISODES = 100
@@ -22,7 +22,7 @@ CONST_ACTION = {0:np.array([1, 0, 0, 1]), 1:np.array([0, 1, 0, 1])}
 
 def run():
     # env = gym.make("two-drone-aviary-v0")
-    env = TwoDroneAviary(gui=True)
+    env = TwoDronesAviary(gui=True)
     print("[INFO] Action space:", env.action_space)
     print("[INFO] Observation space:", env.observation_space)
     env.observation_space.sample()

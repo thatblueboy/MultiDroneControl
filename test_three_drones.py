@@ -12,11 +12,11 @@ from ray.tune import register_env
 from stable_baselines3 import A2C
 from stable_baselines3.a2c import MlpPolicy
 from stable_baselines3.common.env_checker import check_env
-from TwoDroneAviary import TwoDroneAviary
+from ThreeDronesAviary import ThreeDronesAviary
 
 
 EPISODES = 100
-CONST_ACTION = {0: np.array([1, 0, 0, 1]), 1: np.array([0, 1, 0, 1])}
+CONST_ACTION = {0: np.array([1, 0, 0, 1]), 1: np.array([0, 1, 0, 1]), 2:np.array([0, 0, 1, 1])}
 
 # Global variables for storing key states
 key_states = {
@@ -27,7 +27,11 @@ key_states = {
     'up': False,
     'down': False,
     'left': False,
-    'right': False
+    'right': False,
+    'i' : False,
+    'j' : False, 
+    'k' : False,
+    'l' : False
 }
 
 
@@ -42,6 +46,14 @@ def on_press(key):
             key_states['s'] = True
         elif key.char == 'd':
             key_states['d'] = True
+        elif key.char == 'i':
+            key_states['i'] = True
+        elif key.char == 'j':
+            key_states['j'] = True
+        elif key.char == 'k':
+            key_states['k'] = True
+        elif key.char == 'l':
+            key_states['l'] = True
     except AttributeError:
         if key == keyboard.Key.up:
             key_states['up'] = True
@@ -53,7 +65,6 @@ def on_press(key):
             key_states['right'] = True
 
 
-# Function to handle key release events
 def on_release(key):
     try:
         if key.char == 'w':
@@ -64,6 +75,14 @@ def on_release(key):
             key_states['s'] = False
         elif key.char == 'd':
             key_states['d'] = False
+        elif key.char == 'i':
+            key_states['i'] = False
+        elif key.char == 'j':
+            key_states['j'] = False
+        elif key.char == 'k':
+            key_states['k'] = False
+        elif key.char == 'l':
+            key_states['l'] = False
     except AttributeError:
         if key == keyboard.Key.up:
             key_states['up'] = False
@@ -77,7 +96,7 @@ def on_release(key):
 
 def run():
     # env = gym.make("two-drone-aviary-v0")
-    env = TwoDroneAviary(gui=True)
+    env = ThreeDronesAviary(gui=True)
     print("[INFO] Action space:", env.action_space)
     print("[INFO] Observation space:", env.observation_space)
     env.observation_space.sample()
@@ -91,7 +110,7 @@ def run():
         env.reset()
 
         while True:
-            action = {0: np.array([0, 0, 0, 1]), 1: np.array([0, 0, 0, 1])}
+            action = {0: np.array([0, 0, 0, 1]), 1: np.array([0, 0, 0, 1]), 2: np.array([0, 0, 0, 1])}
             print("step")
 
             if key_states['w']:
@@ -111,6 +130,15 @@ def run():
                 action[1][0] = -1
             elif key_states['right']:
                 action[1][0] = 1
+
+            if key_states['i']:
+                action[2][1] = 1
+            elif key_states['k']:
+                action[2][1] = -1
+            elif key_states['j']:
+                action[2][0] = -1
+            elif key_states['l']:
+                action[2][0] = 1
 
             observation, reward, done, info = env.step(action)
             print("#####DONE#####", done)
