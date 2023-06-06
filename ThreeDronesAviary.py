@@ -6,9 +6,9 @@ from gym_pybullet_drones.envs.single_agent_rl.BaseSingleAgentAviary import Actio
 from gym_pybullet_drones.envs.multi_agent_rl.BaseMultiagentAviary import BaseMultiagentAviary
 
 class TwoDroneAviary(BaseMultiagentAviary):
-    """Two drones cross without hitting each other
-    first drone has to go from (-1, -1, 0.5) to (1, 1, 0.5) 
-    Second drone has to go from (1, -1, 0.5) to (-1, 1, 0.5)"""
+    """ 
+    to do
+    """
 
     ################################################################################
 
@@ -17,7 +17,7 @@ class TwoDroneAviary(BaseMultiagentAviary):
                  num_drones: int=2,
                  neighbourhood_radius: float=np.inf,
                  initial_xyzs=np.array([[-1, -1, 0.5], [1, -1, 0.5]]),
-                 initial_rpys=np.array([[0, 0, 0], [0, 0, 0]]),
+                 initial_rpys=np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]),
                  physics: Physics=Physics.PYB,
                  freq: int=240,
                  aggregate_phy_steps: int=1,
