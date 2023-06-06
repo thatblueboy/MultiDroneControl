@@ -1,9 +1,13 @@
 import math
-import numpy as np
 
+import numpy as np
+import pybullet as p
+from gym_pybullet_drones.envs.multi_agent_rl.BaseMultiagentAviary import \
+    BaseMultiagentAviary
+from gym_pybullet_drones.envs.single_agent_rl.BaseSingleAgentAviary import (
+    ActionType, ObservationType)
 from gym_pybullet_drones.utils.enums import DroneModel, Physics
-from gym_pybullet_drones.envs.single_agent_rl.BaseSingleAgentAviary import ActionType, ObservationType
-from gym_pybullet_drones.envs.multi_agent_rl.BaseMultiagentAviary import BaseMultiagentAviary
+
 
 class ThreeDronesAviary(BaseMultiagentAviary):
     """ 
@@ -18,6 +22,7 @@ class ThreeDronesAviary(BaseMultiagentAviary):
                  neighbourhood_radius: float=np.inf,
                  initial_xyzs=np.array([[-1, -1, 0.5], [1, -1, 0.5], [0, 0, 0.5]]),
                  initial_rpys=np.array([[0, 0, 0], [0, 0, 0], [0, 0, 0]]),
+                 obstaclePositions = np.array([[0.5, 0.5, 0.5], [1, 0, 0.5], [0, 1, 0.5], [2, 2, 0.5]]),
                  physics: Physics=Physics.PYB,
                  freq: int=240,
                  aggregate_phy_steps: int=1,
@@ -25,6 +30,7 @@ class ThreeDronesAviary(BaseMultiagentAviary):
                  record=False, 
                  obs: ObservationType=ObservationType.KIN,
                  act: ActionType=ActionType.VEL):
+        
         """Initialization of a multi-agent RL environment.
 
         Using the generic multi-agent RL superclass.
@@ -57,6 +63,8 @@ class ThreeDronesAviary(BaseMultiagentAviary):
             The type of action space (1 or 3D; RPMS, thurst and torques, or waypoint with PID control)
 
         """
+        self.obstacles = []
+        self.obstaclePositions = obstaclePositions
         super().__init__(drone_model=drone_model,
                          num_drones=num_drones,
                          neighbourhood_radius=neighbourhood_radius,
@@ -250,3 +258,18 @@ class ThreeDronesAviary(BaseMultiagentAviary):
             print("[WARNING] it", self.step_counter, "in TwoDroneAviary._clipAndNormalizeState(), clipped xy velocity [{:.2f} {:.2f}]".format(state[10], state[11]))
         if not(clipped_vel_z == np.array(state[12])).all():
             print("[WARNING] it", self.step_counter, "in TwoDroneAviary._clipAndNormalizeState(), clipped z velocity [{:.2f}]".format(state[12]))
+
+    ################################################################################
+
+    def _addObstacles(self):
+            """Add obstacles to the environment.
+
+            Only if the observation is of type RGB, 4 landmarks are added.
+            Overrides BaseMUltiAgentAviary's method.
+
+            """
+            if self.OBSTACLES:
+                for obstaclePos in self.obstaclePositions:
+                    currObstacle = p.loadURDF('sphere_small.urdf', obstaclePos, globalScaling=2)
+                    p.changeDynamics(currObstacle, -1, mass=0)
+                    self.obstacles.append(currObstacle)
