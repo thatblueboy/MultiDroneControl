@@ -18,7 +18,8 @@ from GateAndObsAviary import FlyThruGateAviary
 
 def run():
 
-    env = gym.make('flythrugate-aviary-v0')
+    # env = gym.make('flythrugate-aviary-v0')
+    env = FlyThruGateAviary()
     print("[INFO] Observation space:", env.observation_space)
     print("[INFO] Observation space:", env.observation_space)
 
@@ -31,7 +32,9 @@ def run():
     model.learn(total_timesteps=30000)
     model.save("fly-through")
     model = A2C.load("fly-through")
-    ##################3
+
+    ####################################SHOW TRAINED POLICY####################################
+
     env = FlyThruGateAviary(gui=True)
     obs = env.reset()
     start = time.time()

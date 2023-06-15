@@ -2,8 +2,6 @@ import os
 import numpy as np
 import pybullet as p
 import pkg_resources
-import math
-from gym import spaces
 
 from gym_pybullet_drones.utils.enums import DroneModel, Physics
 from gym_pybullet_drones.envs.single_agent_rl.BaseSingleAgentAviary import ActionType, ObservationType, BaseSingleAgentAviary
@@ -16,7 +14,7 @@ class FlyThruGateAviary(BaseSingleAgentAviary):
     
     def __init__(self,
                  drone_model: DroneModel=DroneModel.CF2X,
-                 initial_xyzs=np.array([[0.0,4.0,0.5]]),
+                 initial_xyzs=np.array([[0.0,0.0,0.2]]),
                  initial_rpys=None,
                  physics: Physics=Physics.PYB,
                  freq: int=240,
@@ -24,7 +22,7 @@ class FlyThruGateAviary(BaseSingleAgentAviary):
                  gui=False,
                  record=False, 
                  obs: ObservationType=ObservationType.KIN,
-                 act: ActionType=ActionType.RPM
+                 act: ActionType=ActionType.VEL
                  ):
         """Initialization of a single agent RL environment.
 
@@ -76,11 +74,11 @@ class FlyThruGateAviary(BaseSingleAgentAviary):
 
         """
         super()._addObstacles()
-        # p.loadURDF(pkg_resources.resource_filename('gym_pybullet_drones', 'assets/architrave.urdf'),
-        #            [0, -1, .55],
-        #            p.getQuaternionFromEuler([0, 0, 0]),
-        #            physicsClientId=self.CLIENT
-        #            )
+        p.loadURDF(pkg_resources.resource_filename('gym_pybullet_drones', 'assets/architrave.urdf'),
+                   [0, -1, .55],
+                   p.getQuaternionFromEuler([0, 0, 0]),
+                   physicsClientId=self.CLIENT
+                   )
         for i in range(10): 
             p.loadURDF("cube_small.urdf",
                        [-.3, -1, .02+i*0.05],
@@ -92,15 +90,8 @@ class FlyThruGateAviary(BaseSingleAgentAviary):
                        p.getQuaternionFromEuler([0,0,0]),
                        physicsClientId=self.CLIENT
                        )
-        
-            p.loadURDF("cube_small.urdf",
-                       [0, 1, .02+i*0.05],
-                       p.getQuaternionFromEuler([0,0,0]),
-                       physicsClientId=self.CLIENT
-                       )
+
     ################################################################################
-    
-    
     
     def _computeReward(self):
         """Computes the current reward value.
@@ -112,19 +103,8 @@ class FlyThruGateAviary(BaseSingleAgentAviary):
 
         """
         state = self._getDroneStateVector(0)
-        # norm_ep_time = (self.step_counter/self.SIM_FREQ) / self.EPISODE_LEN_SEC
-        # reward = -10 * np.linalg.norm(np.array([0, -3*norm_ep_time+2,0.04])-state[0:3])**2
-        distToGate = np.linalg.norm(np.array([0, -1])-state[0:2])
-        reward = -10 * distToGate**2
-
-        distToObstacle = np.linalg.norm(np.array([0, 1])-state[0:2])
-        if distToObstacle < 0.5:
-            reward += -100
-        
-        if distToGate < 0.5:
-            reward += 1000
-        # reward += -2*min((1/np.linalg.norm(np.array([0, 1, 0.75])-state[0:3])**2),0.5)
-        return reward
+        norm_ep_time = (self.step_counter/self.SIM_FREQ) / self.EPISODE_LEN_SEC
+        return -10 * np.linalg.norm(np.array([0, -2*norm_ep_time, 0.75])-state[0:3])**2
 
     ################################################################################
     
