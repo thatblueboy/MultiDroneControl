@@ -7,7 +7,7 @@
 
 2. ```/DronePPO``` is the directory for all PPO implementations for single and multiple agent environments
 
-3. ```/envs``` is the directory for all the environments, it's further broken up into ```/single_agent``` and ```/multi_agent``` environment direcotries
+3. ```/envs``` is the directory for all the environments, it's further broken up into ```/single_agent``` and ```/multi_agent``` environment directories
 
 4. ```/wrappers``` is the directory for all self implemented wrappers
 

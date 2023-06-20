@@ -1,6 +1,6 @@
 # Implementation of Multi-agent control and obstacle avoidance using PPO
 
-Starting off, we we worked with a single drone in an empty world environment followed by adding obstacles and then finally adding multiple drones. The reward system and the hyperparameters were changed accordingly and  have been mentioned in the respective sections. 
+Starting off, we worked with a single drone in an empty world environment followed by adding obstacles and then finally adding multiple drones. The reward system and the hyperparameters were changed accordingly and  have been mentioned in the respective sections. 
 
 ## Single Drone-Gate World with Obstacle:
 
