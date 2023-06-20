@@ -12,7 +12,7 @@ from ray.tune import register_env
 from stable_baselines3 import A2C
 from stable_baselines3.a2c import MlpPolicy
 from stable_baselines3.common.env_checker import check_env
-from ThreeDronesAviary import ThreeDronesAviary
+from envs.multi_agent.ThreeDronesAviary import ThreeDronesAviary
 
 
 EPISODES = 100
